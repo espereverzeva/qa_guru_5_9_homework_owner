@@ -13,16 +13,19 @@ import static helpers.AttachmentHelper.*;
 public class TestBase {
     @BeforeAll
     static void setup() {
-        //        System.out.println("a");
-//        System.out.println(System.getProperties());
-//        gradle clean test -Da=b
-        System.out.println(System.getProperty("a"));
+        // System.out.println("a");
+        // System.out.println(System.getProperties());
+        //gradle clean test -Da=b
+        //System.out.println(System.getProperty("a"));
+
 
         addListener("AllureSelenide", new AllureSelenide());
         DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities.setCapability("enableVNC", true);
         capabilities.setCapability("enableVideo", true);
         Configuration.browserCapabilities = capabilities;
+        //        gradle clean test -Dweb.browser=opera
+        Configuration.browser = System.getProperty("web.browser", "chrome");
 
         // gradle clean test
         // gradle clean test -Dremote.web.driver="https://user1:1234@selenoid.autotests.cloud/wd/hub/"
