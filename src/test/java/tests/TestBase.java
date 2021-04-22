@@ -1,7 +1,9 @@
 package tests;
 
 import com.codeborne.selenide.Configuration;
+import config.DriverConfig;
 import io.qameta.allure.selenide.AllureSelenide;
+import org.aeonbits.owner.ConfigFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -11,6 +13,9 @@ import static com.codeborne.selenide.logevents.SelenideLogger.addListener;
 import static helpers.AttachmentHelper.*;
 
 public class TestBase {
+
+    static DriverConfig driverConfig = ConfigFactory.create(DriverConfig.class);
+
     @BeforeAll
     static void setup() {
         // System.out.println("a");
@@ -29,9 +34,26 @@ public class TestBase {
 
         // gradle clean test
         // gradle clean test -Dremote.web.driver="https://user1:1234@selenoid.autotests.cloud/wd/hub/"
+        // gradle clean test -Dremote.web.driver="https://%s:%s@selenoid.autotests.cloud/wd/hub/"
+
+        /*
+        "https://%s:%s@selenoid.autotests.cloud/wd/hub/"
+        String.format("https://%s:%s@selenoid.autotests.cloud/wd/hub/", "hello", "world")
+            ->
+            "https://hello:world@selenoid.autotests.cloud/wd/hub/"
+         */
+
         String remoteWebDriver = System.getProperty("remote.web.driver");
-        if (remoteWebDriver != null) {
-            Configuration.remote = remoteWebDriver;
+
+        if(remoteWebDriver != null) {
+            String user = driverConfig.remoteWebUser();
+            String password = driverConfig.remoteWebPassword();
+            Configuration.remote = String.format(remoteWebDriver, user, password);
+
+            System.out.println(user);
+            System.out.println(password);
+            System.out.println(remoteWebDriver);
+            System.out.println(String.format(remoteWebDriver, user, password));
         }
     }
 
